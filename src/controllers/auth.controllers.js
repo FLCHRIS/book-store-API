@@ -35,7 +35,7 @@ export const logIn = async (req, res) => {
 	const { status, error, message, token, data } = await service.logIn(user)
 
 	if (error) {
-		return res.status(status).json({ message })
+		return res.status(status).json({ message, data })
 	}
 
 	return res
