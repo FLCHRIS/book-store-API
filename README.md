@@ -74,3 +74,5 @@
 - `docker-compose exec app pnpm run dev`: Start the server in development mode.
 - `docker-compose exec app pnpm run prisma migrate dev --name init`: Run the migrations
 - `docker-compose exec app pnpm run prisma generate`: Generate the Prisma Client
+- `docker-compose exec app pnpm biome format --write .\your\path\file\here`: Format your code
+- `docker-compose exec app pnpm biome lint --write .\your\path\file\here`: Lint your code
