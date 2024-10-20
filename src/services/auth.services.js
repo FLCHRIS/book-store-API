@@ -11,7 +11,7 @@ export const signUp = async (user) => {
 		})
 
 		if (emailExists) {
-			return { message: 'Email already exists', status: 400, error: true }
+			return { message: 'Email already exists', status: 400 }
 		}
 
 		const hash = await encryptPassword(user.password)
@@ -25,12 +25,11 @@ export const signUp = async (user) => {
 
 		return {
 			message: 'User created successfully',
-			status: 201,
-			error: false,
+			status: 201
 		}
 	} catch (error) {
 		console.log(error)
-		return { message: 'Error signing in', status: 500, error: true }
+		return { message: 'Error signing in', status: 500 }
 	}
 }
 
@@ -43,7 +42,7 @@ export const logIn = async (user) => {
 		})
 
 		if (!userExists) {
-			return { message: 'User not found', status: 404, error: true }
+			return { message: 'User not found', status: 404, error: true, data: { user: null } }
 		}
 
 		const isMatch = await decryptPassword(
@@ -52,7 +51,7 @@ export const logIn = async (user) => {
 		)
 
 		if (!isMatch) {
-			return { message: 'Incorrect password', status: 401, error: true }
+			return { message: 'Incorrect password', status: 401, error: true, data: { user: null } }
 		}
 
 		const token = generateToken({
@@ -71,6 +70,6 @@ export const logIn = async (user) => {
 		}
 	} catch (error) {
 		console.log(error)
-		return { message: 'Error signing in', status: 500, error: true }
+		return { message: 'Error signing in', status: 500, error: true, data: { user: null } }
 	}
 }
