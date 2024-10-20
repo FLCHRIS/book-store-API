@@ -22,3 +22,31 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }
+
+model Book {
+  id          Int       @id @default(autoincrement())
+  title       String
+  author      String
+  publisher   String
+  year        Int
+  price       Float
+  stock       Int       @default(0)
+  description String
+  genreId     Int
+  imageId     Int       @unique
+  genre       Genre     @relation(fields: [genreId], references: [id])
+  image       BookImage @relation(fields: [imageId], references: [id])
+}
+
+model BookImage {
+  id       Int    @id @default(autoincrement())
+  publicId String
+  url      String
+  book     Book?
+}
+
+model Genre {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  books Book[]
+}
