@@ -1,0 +1,20 @@
+# EditorConfig ayuda a mantener estilos consistentes
+root = true
+
+[*]
+# Usar tabulaciones para la indentación
+indent_style = tab
+# Tamaño de la indentación en tabulaciones
+indent_size = 4
+# Establecer el fin de línea
+end_of_line = lf
+# Codificación de archivos
+charset = utf-8
+# Insertar una nueva línea al final de cada archivo
+insert_final_newline = true
+# Eliminar espacios en blanco innecesarios
+trim_trailing_whitespace = true
+
+[*.js,*.jsx,*.ts,*.tsx]
+# Longitud máxima de la línea
+max_line_length = 80
