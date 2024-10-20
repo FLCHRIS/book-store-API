@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser'
 import seedGenre from './seed/genre.seed'
 
 import authRoutes from './routes/auth.routes'
+import bookRoutes from './routes/book.routes'
 
 dotenv.config()
 
@@ -19,5 +20,6 @@ app.use(cors())
 seedGenre()
 
 app.use('/api/auth', authRoutes)
+app.use('/api/books', bookRoutes)
 
 export default app
