@@ -31,7 +31,7 @@ model Book {
   year        Int
   price       Float
   stock       Int       @default(0)
-  description String
+  description String    @db.Text
   genreId     Int
   imageId     Int       @unique
   genre       Genre     @relation(fields: [genreId], references: [id])
