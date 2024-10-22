@@ -50,9 +50,41 @@ export const createBook = async (req, res) => {
 		return res.status(400).json({ message: 'Missing required fields' })
 	}
 
+	const formattedBook = {
+		...book,
+		year: Number(book.year),
+		price: Number(book.price),
+		stock: Number(book.stock),
+		genreId: Number(book.genreId),
+	}
+
 	const { status, message, data } = await service.createBook(
-		book,
+		formattedBook,
 		image.tempFilePath,
+	)
+
+	return res.status(status).json({ message, data })
+}
+
+export const updateBook = async (req, res) => {
+	const { id } = req.params
+	const book = req.body
+
+	if (Number(id) < 1) {
+		return res.status(400).json({ message: 'Invalid id' })
+	}
+
+	const formattedBook = {
+		...book,
+		year: book.year ? Number(book.year) : undefined,
+		price: book.price ? Number(book.price) : undefined,
+		stock: book.stock ? Number(book.stock) : undefined,
+		genreId: book.genreId ? Number(book.genreId) : undefined,
+	}
+
+	const { status, message, data } = await service.updateBook(
+		Number(id),
+		formattedBook,
 	)
 
 	return res.status(status).json({ message, data })
