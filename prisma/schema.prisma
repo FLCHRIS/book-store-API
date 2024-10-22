@@ -36,6 +36,8 @@ model Book {
   imageId     Int       @unique
   genre       Genre     @relation(fields: [genreId], references: [id])
   image       BookImage @relation(fields: [imageId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
 }
 
 model BookImage {
