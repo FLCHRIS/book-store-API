@@ -1,4 +1,6 @@
 import prisma from '../database'
+import { uploadImage, deleteImage } from '../cloudinary'
+import deleteTempFile from '../utils/tempFile'
 
 export const getBooks = async (filters, page, size) => {
 	try {
@@ -87,5 +89,73 @@ export const getBook = async (id) => {
 			status: 500,
 			data: { book: null },
 		}
+	}
+}
+
+export const createBook = async (book, imageUrl) => {
+	let savedImage = null
+	try {
+		savedImage = await uploadImage(imageUrl, 'books')
+
+		const savedBook = await prisma.book.create({
+			data: {
+				title: book.title,
+				author: book.author,
+				publisher: book.publisher,
+				description: book.description,
+				year: Number(book.year),
+				price: Number(book.price),
+				stock: Number(book.stock),
+				genre: {
+					connect: {
+						id: Number(book.genreId),
+					},
+				},
+				image: {
+					create: {
+						publicId: savedImage.public_id,
+						url: savedImage.secure_url,
+					},
+				},
+			},
+			select: {
+				id: true,
+				title: true,
+				author: true,
+				publisher: true,
+				year: true,
+				price: true,
+				stock: true,
+				description: true,
+				genre: true,
+				image: true,
+			},
+		})
+
+		return {
+			message: 'Book created successfully',
+			status: 200,
+			data: {
+				book: savedBook,
+			},
+		}
+	} catch (error) {
+		console.log(error)
+
+		if (savedImage) {
+			try {
+				await deleteImage(savedImage.public_id)
+			} catch (error) {
+				console.log(`Error deleting image: ${error}`)
+			}
+		}
+
+		return {
+			message: 'Error creating book',
+			status: 500,
+			data: { book: null },
+		}
+	} finally {
+		await deleteTempFile(imageUrl)
 	}
 }
