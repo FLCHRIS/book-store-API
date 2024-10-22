@@ -1,6 +1,6 @@
-import prisma from '../database'
 import { uploadImage, deleteImage } from '../cloudinary'
 import deleteTempFile from '../utils/tempFile'
+import prisma from '../database'
 
 export const getBooks = async (filters, page, size) => {
 	try {
@@ -103,12 +103,12 @@ export const createBook = async (book, imageUrl) => {
 				author: book.author,
 				publisher: book.publisher,
 				description: book.description,
-				year: Number(book.year),
-				price: Number(book.price),
-				stock: Number(book.stock),
+				year: book.year,
+				price: book.price,
+				stock: book.stock,
 				genre: {
 					connect: {
-						id: Number(book.genreId),
+						id: book.genreId,
 					},
 				},
 				image: {
@@ -157,5 +157,68 @@ export const createBook = async (book, imageUrl) => {
 		}
 	} finally {
 		await deleteTempFile(imageUrl)
+	}
+}
+
+export const updateBook = async (id, book) => {
+	try {
+		const bookExists = await prisma.book.findUnique({
+			where: { id },
+		})
+
+		if (!bookExists) {
+			return {
+				message: 'Book not found',
+				status: 404,
+				data: { book: null },
+			}
+		}
+
+		const { genreId, ...formattedBook } = book
+
+		const updateData = {
+			...formattedBook,
+			updatedAt: new Date(),
+		}
+
+		if (genreId) {
+			updateData.genre = {
+				connect: {
+					id: genreId,
+				},
+			}
+		}
+
+		const updatedBook = await prisma.book.update({
+			where: { id },
+			data: updateData,
+			select: {
+				id: true,
+				title: true,
+				author: true,
+				publisher: true,
+				year: true,
+				price: true,
+				stock: true,
+				description: true,
+				genre: true,
+				image: true,
+			},
+		})
+
+		return {
+			message: 'Book updated successfully',
+			status: 200,
+			data: {
+				book: updatedBook,
+			},
+		}
+	} catch (error) {
+		console.log(error)
+		return {
+			message: 'Error updating book',
+			status: 500,
+			data: { book: null },
+		}
 	}
 }
