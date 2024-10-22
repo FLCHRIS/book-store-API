@@ -13,5 +13,6 @@ router.post(
 	fileUpload({ useTempFiles: true, tempFileDir: './tmp' }),
 	controller.createBook,
 )
+router.patch('/:id', verifyToken, controller.updateBook)
 
 export default router
