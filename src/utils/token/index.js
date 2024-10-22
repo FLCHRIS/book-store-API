@@ -6,3 +6,13 @@ export const generateToken = (payload) => {
 	})
 	return token
 }
+
+export const validateToken = (token) => {
+  try {
+    jwt.verify(token, process.env.JWT_SECRET)
+
+    return { error: false }
+  } catch (error) {
+    return { message: 'Token inválido.', error: true }
+  }
+}
