@@ -222,3 +222,67 @@ export const updateBook = async (id, book) => {
 		}
 	}
 }
+
+export const updateBookImage = async (id, imageUrl) => {
+	try {
+		const bookExists = await prisma.book.findUnique({
+			where: { id },
+			select: {
+				id: true,
+				image: true,
+			},
+		})
+
+		if (!bookExists) {
+			return {
+				message: 'Book not found',
+				status: 404,
+				data: { book: null },
+			}
+		}
+
+		const savedImage = await uploadImage(imageUrl, 'books')
+		await deleteImage(bookExists.image.publicId)
+
+		const updateBook = await prisma.book.update({
+			where: { id },
+			data: {
+				image: {
+					update: {
+						publicId: savedImage.public_id,
+						url: savedImage.secure_url,
+					},
+				},
+			},
+			select: {
+				id: true,
+				title: true,
+				author: true,
+				publisher: true,
+				year: true,
+				price: true,
+				stock: true,
+				description: true,
+				genre: true,
+				image: true,
+			},
+		})
+
+		return {
+			message: 'Book image updated successfully',
+			status: 200,
+			data: {
+				book: updateBook,
+			},
+		}
+	} catch (error) {
+		console.log(error)
+		return {
+			message: 'Error updating book image',
+			status: 500,
+			data: { book: null },
+		}
+	} finally {
+		await deleteTempFile(imageUrl)
+	}
+}
