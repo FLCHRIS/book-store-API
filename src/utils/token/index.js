@@ -9,9 +9,9 @@ export const generateToken = (payload) => {
 
 export const validateToken = (token) => {
   try {
-    jwt.verify(token, process.env.JWT_SECRET)
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-    return { error: false }
+    return { error: false, decoded }
   } catch (error) {
     return { message: 'Token inválido.', error: true }
   }
