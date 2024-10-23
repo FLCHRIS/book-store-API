@@ -14,5 +14,11 @@ router.post(
 	controller.createBook,
 )
 router.patch('/:id', verifyToken, controller.updateBook)
+router.patch(
+	'/:id/image',
+	verifyToken,
+	fileUpload({ useTempFiles: true, tempFileDir: './tmp' }),
+	controller.updateBookImage,
+)
 
 export default router
