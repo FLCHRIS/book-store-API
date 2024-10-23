@@ -89,3 +89,18 @@ export const updateBook = async (req, res) => {
 
 	return res.status(status).json({ message, data })
 }
+
+export const updateBookImage = async (req, res) => {
+	const { id } = req.params
+	const image = req.files?.image
+
+	if (Number(id) < 1) return res.status(400).json({ message: 'Invalid id' })
+	if (!image) return res.status(400).json({ message: 'Image not provided' })
+
+	const { status, message, data } = await service.updateBookImage(
+		Number(id),
+		image.tempFilePath,
+	)
+
+	return res.status(status).json({ message, data })
+}
