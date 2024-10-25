@@ -7,6 +7,7 @@ import seedGenre from './seed/genre.seed'
 
 import authRoutes from './routes/auth.routes'
 import bookRoutes from './routes/book.routes'
+import orderRoutes from './routes/order.routes'
 
 dotenv.config()
 
@@ -21,5 +22,6 @@ seedGenre()
 
 app.use('/api/auth', authRoutes)
 app.use('/api/books', bookRoutes)
+app.use('/api/orders', orderRoutes)
 
 export default app
