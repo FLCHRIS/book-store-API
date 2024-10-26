@@ -1,5 +1,47 @@
 import prisma from '../database'
 
+export const getOrders = async (filters) => {
+	try {
+		const orders = await prisma.order.findMany({
+			where: filters,
+			include: {
+				orderItems: {
+					include: {
+						book: {
+							select: {
+								id: true,
+							},
+						},
+					},
+				},
+			},
+		})
+
+		if (!orders) {
+			return {
+				message: 'Orders not found',
+				status: 404,
+				data: { orders: [] },
+			}
+		}
+
+		return {
+			message: 'Orders retrieved successfully',
+			status: 200,
+			data: {
+				orders,
+			},
+		}
+	} catch (error) {
+		console.log(error)
+		return {
+			message: 'Error retrieving orders',
+			status: 500,
+			data: { orders: [] },
+		}
+	}
+}
+
 export const createOrder = async (bookId, quantity, userId) => {
 	try {
 		const book = await prisma.book.findUnique({
