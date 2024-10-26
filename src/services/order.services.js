@@ -58,6 +58,14 @@ export const createOrder = async (bookId, quantity, userId) => {
 			}
 		}
 
+		if (book.stock < quantity) {
+			return {
+				message: 'Not enough stock available',
+				status: 400,
+				data: { order: null },
+			}
+		}
+
 		let order = await prisma.order.findFirst({
 			where: {
 				userId,
@@ -125,6 +133,58 @@ export const createOrder = async (bookId, quantity, userId) => {
 		console.log(error)
 		return {
 			message: 'Error creating order',
+			status: 500,
+			data: { order: null },
+		}
+	}
+}
+
+export const completeOrder = async (orderId, amount) => {
+	try {
+		const order = await prisma.order.findUnique({
+			where: { id: orderId },
+			include: { orderItems: true },
+		})
+
+		if (!order || order.status !== 'PENDING') {
+			return {
+				message: 'Order not found or already completed',
+				status: 404,
+				data: { order: null },
+			}
+		}
+
+		await prisma.payment.create({
+			data: {
+				orderId,
+				amount,
+				paidAt: new Date(),
+			},
+		})
+
+		await Promise.all(
+			order.orderItems.map((item) =>
+				prisma.book.update({
+					where: { id: item.bookId },
+					data: { stock: { decrement: item.quantity } },
+				}),
+			),
+		)
+
+		const updatedOrder = await prisma.order.update({
+			where: { id: order.id },
+			data: { status: 'COMPLETED' },
+		})
+
+		return {
+			message: 'Order completed successfully',
+			status: 200,
+			data: { order: updatedOrder },
+		}
+	} catch (error) {
+		console.log(error)
+		return {
+			message: 'Error completing order',
 			status: 500,
 			data: { order: null },
 		}
