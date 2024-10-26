@@ -13,6 +13,14 @@ export const getOrders = async (req, res) => {
 	return res.status(statusCode).json({ message, data })
 }
 
+export const getOrder = async (req, res) => {
+	const { id } = req.params
+
+	const { status, message, data } = await service.getOrder(Number(id))
+
+	return res.status(status).json({ message, data })
+}
+
 export const createOrder = async (req, res) => {
 	const { bookId, quantity } = req.body
 	const user = req.user
@@ -39,6 +47,14 @@ export const completeOrder = async (req, res) => {
 	}
 
 	const { status, message, data } = await service.completeOrder(Number(id), Number(amout))
+
+	return res.status(status).json({ message, data })
+}
+
+export const cancelOrder = async (req, res) => {
+	const { id } = req.params
+
+	const { status, message, data } = await service.cancelOrder(Number(id))
 
 	return res.status(status).json({ message, data })
 }
