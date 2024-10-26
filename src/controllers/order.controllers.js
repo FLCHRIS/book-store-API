@@ -27,5 +27,18 @@ export const createOrder = async (req, res) => {
 		Number(user.id),
 	)
 
-	res.status(status).json({ message, data })
+	return res.status(status).json({ message, data })
+}
+
+export const completeOrder = async (req, res) => {
+	const { id } = req.params
+	const { amout } = req.body
+
+	if (!amout) {
+		return res.status(400).json({ message: 'Missing parameters' })
+	}
+
+	const { status, message, data } = await service.completeOrder(Number(id), Number(amout))
+
+	return res.status(status).json({ message, data })
 }
