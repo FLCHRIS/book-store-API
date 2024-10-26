@@ -55,6 +55,7 @@ export const logIn = async (user) => {
 		}
 
 		const token = generateToken({
+			id: userExists.id,
 			email: userExists.email,
 			role: userExists.role,
 		})
