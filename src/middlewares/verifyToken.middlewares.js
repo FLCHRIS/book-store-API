@@ -8,11 +8,13 @@ const verifyToken = (req, res, next) => {
 			return res.status(403).json({ message: 'Access not authorized' })
 		}
 
-		const { error, message } = validateToken(token)
+		const { error, message, decoded } = validateToken(token)
 
 		if (error) {
 			return res.status(401).json({ message })
 		}
+
+		req.user = decoded
 
 		return next()
 	} catch (error) {
