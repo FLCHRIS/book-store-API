@@ -19,15 +19,16 @@ enum OrderStatus {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   firstName String
   lastName  String
-  email     String   @unique
+  email     String     @unique
   password  String
-  role      Role     @default(CUSTOMER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  role      Role       @default(CUSTOMER)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now())
   orders    Order[]
+  favorites Favorite[]
 }
 
 model Book {
@@ -44,6 +45,7 @@ model Book {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @default(now())
   orderItems  OrderItem[]
+  favorites   Favorite[]
   genre       Genre       @relation(fields: [genreId], references: [id])
   image       BookImage   @relation(fields: [imageId], references: [id])
 }
@@ -59,6 +61,16 @@ model Genre {
   id    Int    @id @default(autoincrement())
   name  String @unique
   books Book[]
+}
+
+model Favorite {
+  id     Int  @id @default(autoincrement())
+  userId Int
+  bookId Int
+  user   User @relation(fields: [userId], references: [id])
+  book   Book @relation(fields: [bookId], references: [id])
+
+  @@unique([userId, bookId])
 }
 
 model Order {
