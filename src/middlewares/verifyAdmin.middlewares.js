@@ -1,12 +1,8 @@
-import { validateToken } from '../utils/token'
-
 const verifyAdmin = (req, res, next) => {
 	try {
-		const token = req.cookies.token
+		const user = req.user
 
-		const { decoded } = validateToken(token)
-
-		if (decoded.role !== 'ADMIN') {
+		if (user.role !== 'ADMIN') {
 			return res.status(403).json({ message: 'Access not authorized' })
 		}
 
