@@ -6,7 +6,8 @@ const router = Router()
 
 router.get('', verifyToken, controller.getOrders)
 router.post('', verifyToken, controller.createOrder)
-router.post('/:id/complete', verifyToken, controller.completeOrder)
-// TODO: Add routes for cancel order
+router.get('/:id', verifyToken, controller.getOrder)
+router.put('/:id/complete', verifyToken, controller.completeOrder)
+router.patch('/:id/cancel', verifyToken, controller.cancelOrder)
 
 export default router
