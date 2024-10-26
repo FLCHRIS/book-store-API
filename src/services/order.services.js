@@ -42,6 +42,48 @@ export const getOrders = async (filters) => {
 	}
 }
 
+export const getOrder = async (orderId) => {
+	try {
+		const order = await prisma.order.findUnique({
+			where: { id: orderId },
+			include: {
+				orderItems: {
+					include: {
+						book: {
+							select: {
+								id: true,
+							},
+						},
+					},
+				},
+			},
+		})
+
+		if (!order) {
+			return {
+				message: 'Order not found',
+				status: 404,
+				data: { order: null },
+			}
+		}
+
+		return {
+			message: 'Order retrieved successfully',
+			status: 200,
+			data: {
+				order,
+			},
+		}
+	} catch (error) {
+		console.log(error)
+		return {
+			message: 'Error retrieving order',
+			status: 500,
+			data: { order: null },
+		}
+	}
+}
+
 export const createOrder = async (bookId, quantity, userId) => {
 	try {
 		const book = await prisma.book.findUnique({
@@ -185,6 +227,40 @@ export const completeOrder = async (orderId, amount) => {
 		console.log(error)
 		return {
 			message: 'Error completing order',
+			status: 500,
+			data: { order: null },
+		}
+	}
+}
+
+export const cancelOrder = async (orderId) => {
+	try {
+		const order = await prisma.order.findUnique({
+			where: { id: orderId },
+		})
+
+		if (!order || order.status !== 'PENDING') {
+			return {
+				message: 'Order not found or already completed',
+				status: 404,
+				data: { order: null },
+			}
+		}
+
+		const canceledOrder = await prisma.order.update({
+			where: { id: order.id },
+			data: { status: 'CANCELED' },
+		})
+
+		return {
+			message: 'Order cancelled successfully',
+			status: 200,
+			data: { order: canceledOrder },
+		}
+	} catch (error) {
+		console.log(error)
+		return {
+			message: 'Error cancelling order',
 			status: 500,
 			data: { order: null },
 		}
