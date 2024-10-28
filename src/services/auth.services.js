@@ -2,7 +2,7 @@ import prisma from '../database'
 import { generateToken } from '../utils/token'
 import { encryptPassword, decryptPassword } from '../utils/encryption'
 
-export const signUp = async (user) => {
+export const signUp = async (user, role = 'CUSTOMER') => {
 	try {
 		const emailExists = await prisma.user.findUnique({
 			where: {
@@ -20,12 +20,13 @@ export const signUp = async (user) => {
 			data: {
 				...user,
 				password: hash,
+				role,
 			},
 		})
 
 		return {
 			message: 'User created successfully',
-			status: 201
+			status: 201,
 		}
 	} catch (error) {
 		console.log(error)
@@ -42,7 +43,12 @@ export const logIn = async (user) => {
 		})
 
 		if (!userExists) {
-			return { message: 'User not found', status: 404, error: true, data: { user: null } }
+			return {
+				message: 'User not found',
+				status: 404,
+				error: true,
+				data: { user: null },
+			}
 		}
 
 		const isMatch = await decryptPassword(
@@ -51,7 +57,12 @@ export const logIn = async (user) => {
 		)
 
 		if (!isMatch) {
-			return { message: 'Incorrect password', status: 401, error: true, data: { user: null } }
+			return {
+				message: 'Incorrect password',
+				status: 401,
+				error: true,
+				data: { user: null },
+			}
 		}
 
 		const token = generateToken({
@@ -71,6 +82,11 @@ export const logIn = async (user) => {
 		}
 	} catch (error) {
 		console.log(error)
-		return { message: 'Error signing in', status: 500, error: true, data: { user: null } }
+		return {
+			message: 'Error signing in',
+			status: 500,
+			error: true,
+			data: { user: null },
+		}
 	}
 }
