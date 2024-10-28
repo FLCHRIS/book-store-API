@@ -2,22 +2,39 @@ import * as service from '../services/auth.services'
 import { isValidEmail } from '../utils/validation'
 
 export const signUp = async (req, res) => {
-	const user = req.body
+	const { firstName, lastName, email, password } = req.body
 
-	if (
-		!user.firstName ||
-		!user.lastName ||
-		!user.email ||
-		!user.password ||
-		!user.role
-	) {
+	if (!firstName || !lastName || !email || !password) {
 		return res.status(400).json({ message: 'Missing required fields' })
 	}
-	if (!isValidEmail(user.email)) {
+	if (!isValidEmail(email)) {
 		return res.status(400).json({ message: 'Invalid email' })
 	}
 
-	const { status, message } = await service.signUp(user)
+	const { status, message } = await service.signUp({
+		firstName,
+		lastName,
+		email,
+		password,
+	})
+
+	return res.status(status).json({ message })
+}
+
+export const signUpAdmin = async (req, res) => {
+	const { firstName, lastName, email, password, role } = req.body
+
+	if (!firstName || !lastName || !email || !password || !role) {
+		return res.status(400).json({ message: 'Missing required fields' })
+	}
+	if (!isValidEmail(email)) {
+		return res.status(400).json({ message: 'Invalid email' })
+	}
+
+	const { status, message } = await service.signUp(
+		{ firstName, lastName, email, password },
+		role,
+	)
 
 	return res.status(status).json({ message })
 }
