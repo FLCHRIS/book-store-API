@@ -90,6 +90,10 @@ export const createOrder = async (bookId, quantity, userId) => {
 			where: {
 				id: bookId,
 			},
+			select: {
+				price: true,
+				stock: true,
+			}
 		})
 
 		if (!book) {
@@ -185,7 +189,11 @@ export const completeOrder = async (orderId, amount) => {
 	try {
 		const order = await prisma.order.findUnique({
 			where: { id: orderId },
-			include: { orderItems: true },
+			select: {
+				id: true,
+				status: true,
+				orderItems: true,
+			},
 		})
 
 		if (!order || order.status !== 'PENDING') {
@@ -237,6 +245,10 @@ export const cancelOrder = async (orderId) => {
 	try {
 		const order = await prisma.order.findUnique({
 			where: { id: orderId },
+			select: {
+				id: true,
+				status: true,
+			},
 		})
 
 		if (!order || order.status !== 'PENDING') {
