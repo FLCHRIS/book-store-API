@@ -10,5 +10,6 @@ router.post('/sign-up-admin', verifyToken, verifyAdmin, controllers.signUpAdmin)
 router.post('/log-in', controllers.logIn)
 router.post('/log-out', controllers.logOut)
 router.delete('/delete-account', verifyToken, controllers.deleteAccount)
+router.patch('/update-password', verifyToken, controllers.updatePassword)
 
 export default router
