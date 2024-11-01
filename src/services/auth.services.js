@@ -39,6 +39,7 @@ export const logIn = async (user) => {
 		const userExists = await prisma.user.findUnique({
 			where: {
 				email: user.email,
+				isActive: true,
 			},
 		})
 
