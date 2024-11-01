@@ -91,3 +91,53 @@ export const logIn = async (user) => {
 		}
 	}
 }
+
+export const deleteAccount = async ({ email, password }) => {
+	try {
+		const userExists = await prisma.user.findUnique({
+			where: {
+				email,
+				isActive: true,
+			},
+		})
+
+		if (!userExists) {
+			return {
+				message: 'User not found',
+				status: 404,
+				error: true,
+			}
+		}
+
+		const isMatch = await decryptPassword(password, userExists.password)
+
+		if (!isMatch) {
+			return {
+				message: 'Incorrect password',
+				status: 401,
+				error: true,
+			}
+		}
+
+		await prisma.user.update({
+			where: { email },
+			data: {
+				isActive: false,
+				deletedAt: new Date(),
+			},
+		})
+
+		return {
+			message: 'Account deleted successfully',
+			status: 200,
+			error: false,
+		}
+	} catch (error) {
+		console.log(error)
+		return {
+			message: 'Error deleting account',
+			status: 500,
+			error: true,
+		}
+	}
+}
