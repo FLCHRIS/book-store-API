@@ -164,6 +164,9 @@ export const updateBook = async (id, book) => {
 	try {
 		const bookExists = await prisma.book.findUnique({
 			where: { id },
+			select: {
+				id: true,
+			}
 		})
 
 		if (!bookExists) {
