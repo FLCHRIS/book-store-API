@@ -66,8 +66,16 @@ export const getFavorites = async (userId, page, size) => {
 	}
 }
 
-export const createFavorite = async (userId, bookId) => {
+export const createFavorite = async (userId, userRole, bookId) => {
 	try {
+		if (userRole !== 'CUSTOMER') {
+			return {
+				message: 'Only customers can create favorites',
+				status: 403,
+				data: { favorite: null },
+			}
+		}
+
 		const existingFavorite = await prisma.favorite.findUnique({
 			where: {
 				userId_bookId: {
