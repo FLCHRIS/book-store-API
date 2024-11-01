@@ -91,3 +91,28 @@ export const deleteAccount = async (req, res) => {
 
 	return res.status(status).clearCookie('token').json({ message })
 }
+
+export const updatePassword = async (req, res) => {
+	const { oldPassword, newPassword } = req.body
+	const user = req.user
+
+	if (!oldPassword || !newPassword) {
+		return res.status(400).json({ message: 'Missing required fields' })
+	}
+
+	if (oldPassword === newPassword) {
+		return res
+			.status(400)
+			.json({
+				message: 'New password cannot be the same as the old password',
+			})
+	}
+
+	const { message, status, data } = await service.updatePassword({
+		oldPassword,
+		newPassword,
+		email: user.email,
+	})
+
+	return res.status(status).json({ message, data })
+}
