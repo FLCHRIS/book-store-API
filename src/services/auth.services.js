@@ -8,6 +8,9 @@ export const signUp = async (user, role = 'CUSTOMER') => {
 			where: {
 				email: user.email,
 			},
+			select: {
+				email: true,
+			}
 		})
 
 		if (emailExists) {
@@ -107,6 +110,9 @@ export const deleteAccount = async ({ email, password }) => {
 				email,
 				isActive: true,
 			},
+			select: {
+				password: true,
+			}
 		})
 
 		if (!userExists) {
@@ -157,6 +163,9 @@ export const updatePassword = async ({ oldPassword, newPassword, email }) => {
 				email,
 				isActive: true,
 			},
+			select: {
+				password: true,
+			}
 		})
 
 		if (!userExists) {
