@@ -2,7 +2,7 @@ import prisma from '../database'
 import { generateToken } from '../utils/token'
 import { encryptPassword, decryptPassword } from '../utils/encryption'
 
-export const signUp = async (user, role = 'CUSTOMER') => {
+export const signUp = async (user) => {
 	try {
 		const emailExists = await prisma.user.findUnique({
 			where: {
@@ -23,7 +23,6 @@ export const signUp = async (user, role = 'CUSTOMER') => {
 			data: {
 				...user,
 				password: hash,
-				role,
 			},
 		})
 
