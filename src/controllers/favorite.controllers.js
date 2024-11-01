@@ -23,6 +23,7 @@ export const createFavorite = async (req, res) => {
 
 	const { status, message, data } = await service.createFavorite(
 		Number(user.id),
+		user.role,
 		Number(bookId),
 	)
 
