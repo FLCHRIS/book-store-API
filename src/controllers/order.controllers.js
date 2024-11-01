@@ -33,6 +33,7 @@ export const createOrder = async (req, res) => {
 		Number(bookId),
 		Number(quantity),
 		Number(user.id),
+		user.role,
 	)
 
 	return res.status(status).json({ message, data })
