@@ -71,3 +71,23 @@ export const logOut = async (req, res) => {
 		.clearCookie('token')
 		.json({ message: 'User logged out successfully' })
 }
+
+export const deleteAccount = async (req, res) => {
+	const { password } = req.body
+	const user = req.user
+
+	if (!password) {
+		return res.status(400).json({ message: 'Missing required fields' })
+	}
+
+	const { status, error, message } = await service.deleteAccount({
+		email: user.email,
+		password,
+	})
+
+	if (error) {
+		return res.status(status).json({ message })
+	}
+
+	return res.status(status).clearCookie('token').json({ message })
+}
