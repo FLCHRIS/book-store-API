@@ -84,8 +84,16 @@ export const getOrder = async (orderId) => {
 	}
 }
 
-export const createOrder = async (bookId, quantity, userId) => {
+export const createOrder = async (bookId, quantity, userId, userRole) => {
 	try {
+		if (userRole !== 'CUSTOMER') {
+			return {
+				message: 'Only customers can create orders',
+				status: 403,
+				data: { order: null },
+			}
+		}
+
 		const book = await prisma.book.findUnique({
 			where: {
 				id: bookId,
