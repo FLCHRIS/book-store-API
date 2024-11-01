@@ -21,24 +21,6 @@ export const signUp = async (req, res) => {
 	return res.status(status).json({ message })
 }
 
-export const signUpAdmin = async (req, res) => {
-	const { firstName, lastName, email, password, role } = req.body
-
-	if (!firstName || !lastName || !email || !password || !role) {
-		return res.status(400).json({ message: 'Missing required fields' })
-	}
-	if (!isValidEmail(email)) {
-		return res.status(400).json({ message: 'Invalid email' })
-	}
-
-	const { status, message } = await service.signUp(
-		{ firstName, lastName, email, password },
-		role,
-	)
-
-	return res.status(status).json({ message })
-}
-
 export const logIn = async (req, res) => {
 	const user = req.body
 
