@@ -41,6 +41,14 @@ export const logIn = async (user) => {
 				email: user.email,
 				isActive: true,
 			},
+			select: {
+				id: true,
+				firstName: true,
+				lastName: true,
+				email: true,
+				role: true,
+				password: true,
+			}
 		})
 
 		if (!userExists) {
@@ -138,6 +146,64 @@ export const deleteAccount = async ({ email, password }) => {
 			message: 'Error deleting account',
 			status: 500,
 			error: true,
+		}
+	}
+}
+
+export const updatePassword = async ({ oldPassword, newPassword, email }) => {
+	try {
+		const userExists = await prisma.user.findUnique({
+			where: {
+				email,
+				isActive: true,
+			},
+		})
+
+		if (!userExists) {
+			return {
+				message: 'User not found',
+				status: 404,
+				data: { user: null },
+			}
+		}
+
+		const isMatch = await decryptPassword(oldPassword, userExists.password)
+
+		if (!isMatch) {
+			return {
+				message: 'Incorrect password',
+				status: 401,
+				data: { user: null },
+			}
+		}
+
+		const hash = await encryptPassword(newPassword)
+
+		const updatedUser = await prisma.user.update({
+			where: { email },
+			data: {
+				password: hash,
+			},
+			select: {
+				id: true,
+				firstName: true,
+				lastName: true,
+				email: true,
+				role: true,
+			}
+		})
+
+		return {
+			message: 'Password updated successfully',
+			status: 200,
+			data: { user: updatedUser },
+		}
+	} catch (error) {
+		console.log(error)
+		return {
+			message: 'Error updating password',
+			status: 500,
+			data: { user: null },
 		}
 	}
 }
