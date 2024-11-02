@@ -3,8 +3,11 @@ import { isValidEmail } from '../utils/validation'
 
 export const getUsers = async (req, res) => {
 	const { role, email, page = 1, size = 10 } = req.query
+	const user = req.user
 
-	const filters = {}
+	const filters = {
+		id: { not: Number(user.id) },
+	}
 
 	if (role) filters.role = role
 	if (email) filters.email = { contains: String(email) }
@@ -48,6 +51,11 @@ export const createUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
 	const { id } = req.params
+	const user = req.user
+
+	if (Number(id) === Number(user.id)) {
+		return res.status(400).json({ message: 'You can not delete yourself' })
+	}
 
 	const { message, status } = await service.deleteUser(Number(id))
 
