@@ -7,6 +7,7 @@ import seedGenre from './seed/genre.seed'
 
 import authRoutes from './routes/auth.routes'
 import bookRoutes from './routes/book.routes'
+import userRoutes from './routes/user.routes'
 import orderRoutes from './routes/order.routes'
 import favoriteRoutes from './routes/favorite.routes'
 
@@ -23,6 +24,7 @@ seedGenre()
 
 app.use('/api/auth', authRoutes)
 app.use('/api/books', bookRoutes)
+app.use('/api/users', userRoutes)
 app.use('/api/orders', orderRoutes)
 app.use('/api/favorites', favoriteRoutes)
 
