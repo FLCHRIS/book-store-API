@@ -115,6 +115,7 @@ export const createUser = async (user) => {
 		const savedUser = await prisma.user.create({
 			data: {
 				...user,
+				role: 'ADMIN',
 				password: hash,
 			},
 			select: {
