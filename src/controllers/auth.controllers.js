@@ -41,7 +41,8 @@ export const logIn = async (req, res) => {
 		.status(status)
 		.cookie('token', token, {
 			httpOnly: true,
-			sameSite: 'strict',
+			sameSite: 'none',
+			secure: true,
 			maxAge: 86400000,
 		})
 		.json({ message, data })
