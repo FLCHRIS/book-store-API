@@ -55,6 +55,10 @@ export const logOut = async (req, res) => {
 		.json({ message: 'User logged out successfully' })
 }
 
+export const validateSession = async (req, res) => {
+	return res.status(200).json({ message: 'Valid session' })
+}
+
 export const deleteAccount = async (req, res) => {
 	const { password } = req.body
 	const user = req.user
@@ -84,11 +88,9 @@ export const updatePassword = async (req, res) => {
 	}
 
 	if (oldPassword === newPassword) {
-		return res
-			.status(400)
-			.json({
-				message: 'New password cannot be the same as the old password',
-			})
+		return res.status(400).json({
+			message: 'New password cannot be the same as the old password',
+		})
 	}
 
 	const { message, status, data } = await service.updatePassword({
