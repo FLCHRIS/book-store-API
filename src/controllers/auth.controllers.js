@@ -55,8 +55,24 @@ export const logOut = async (req, res) => {
 		.json({ message: 'User logged out successfully' })
 }
 
-export const validateSession = async (req, res) => {
-	return res.status(200).json({ message: 'Valid session' })
+export const refreshToken = async (req, res) => {
+	const user = req.user
+
+	const { message, status, error, data, token } = await service.refreshToken(user.email)
+
+	if (error) {
+		return res.status(status).json({ message, data })
+	}
+
+	return res
+		.status(status)
+		.cookie('token', token, {
+			httpOnly: true,
+			sameSite: 'none',
+			secure: true,
+			maxAge: 86400000,
+		})
+		.json({ message, data })
 }
 
 export const deleteAccount = async (req, res) => {
