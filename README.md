@@ -44,18 +44,23 @@
 
    Once your application is running in Docker, you'll need to run the Prisma migrations. Follow these steps:
    ```bash
-    docker-compose exec app pnpm run prisma migrate dev --name init
+    docker-compose exec app pnpm prisma migrate deploy
    ```
    This command will do the following:
 
-   - Create a new migration (in this case, named init).
-   - Apply that migration to the database specified in DATABASE_URL.
+   - This command applies the migrations to the database.
+   - It will simply synchronize your database with the already existing migrations.
+
+   If you want to generate new migrations, use the following command:
+   ```bash
+    docker-compose exec app pnpm prisma migrate dev --name init
+   ```
 
 5. Generate the Prisma Client
 
    After applying the migrations, you need to generate the Prisma Client so your application can interact with the database. Use the following command:
    ```bash
-    docker-compose exec app pnpm run prisma generate
+    docker-compose exec app pnpm prisma generate
    ```
    This command will generate the Prisma Client, which will be used in your application to perform database queries.
 
@@ -73,7 +78,8 @@
 - `docker-compose down`: Stop the image.
 - `docker-compose exec db mysql -u root -p`: Connect to the database.
 - `docker-compose exec app pnpm run dev`: Start the server in development mode.
-- `docker-compose exec app pnpm run prisma migrate dev --name init`: Run the migrations.
-- `docker-compose exec app pnpm run prisma generate`: Generate the Prisma Client.
+- `docker-compose exec app pnpm prisma migrate dev --name init`: Create a new migration.
+- `docker-compose exec app pnpm prisma migrate deploy`: Apply existing migrations to the database.
+- `docker-compose exec app pnpm prisma generate`: Generate the Prisma Client.
 - `docker-compose exec app pnpm biome format --write .\your\path\file\here`: Format your code.
 - `docker-compose exec app pnpm biome lint --write .\your\path\file\here`: Lint your code.
