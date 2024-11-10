@@ -75,6 +75,7 @@
 ## Commands
 
 - `docker-compose up -d --build`: Build the image.
+- `docker-compose up -d`: Start the image.
 - `docker-compose down`: Stop the image.
 - `docker-compose exec db mysql -u root -p`: Connect to the database.
 - `docker-compose exec app pnpm run dev`: Start the server in development mode.
