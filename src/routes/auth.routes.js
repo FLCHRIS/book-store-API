@@ -9,6 +9,5 @@ router.post('/log-in', controllers.logIn)
 router.post('/log-out', controllers.logOut)
 router.delete('/delete-account', verifyToken, controllers.deleteAccount)
 router.patch('/update-password', verifyToken, controllers.updatePassword)
-router.get('/refresh-token', verifyToken, controllers.refreshToken)
 
 export default router
