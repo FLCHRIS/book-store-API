@@ -1,7 +1,6 @@
 import prisma from '../database'
 import { generateToken } from '../utils/token'
 import { encryptPassword, decryptPassword } from '../utils/encryption'
-import { token } from 'morgan'
 
 export const signUp = async (user) => {
 	try {
@@ -99,55 +98,6 @@ export const logIn = async (user) => {
 			status: 500,
 			error: true,
 			data: { user: null },
-		}
-	}
-}
-
-export const refreshToken = async (email) => {
-	try {
-		const userExists = await prisma.user.findUnique({
-			where: {
-				email,
-				isActive: true,
-			},
-			select: {
-				id: true,
-				firstName: true,
-				lastName: true,
-				email: true,
-				role: true,
-			}
-		})
-
-		if (!userExists) {
-			return {
-				message: 'User not found',
-				status: 404,
-				error: true,
-				data: { user: null },
-			}
-		}
-
-		const token = generateToken({
-			id: userExists.id,
-			email: userExists.email,
-			role: userExists.role,
-		})
-
-		return {
-			message: 'Token refreshed successfully.',
-			status: 200,
-			error: false,
-			token: token,
-			data: { user: userExists },
-		}
-	} catch (error) {
-		console.log(error)
-		return {
-			message: 'Error refreshing token',
-			status: 500,
-			error: true,
-			data: { user: null }
 		}
 	}
 }
